@@ -6,8 +6,8 @@ function App() {
     <Canvas camera={{ position: [3, 3, 3] }}>
       <OrbitControls />
       <mesh>
-        <boxGeometry />
-        <meshNormalMaterial />
+        <boxGeometry args={[1, 1, 1]} />
+        <meshNormalMaterial color="red" />
       </mesh>
     </Canvas>
   );

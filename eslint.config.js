@@ -3,7 +3,7 @@ import globals from "globals";
 import react from "eslint-plugin-react";
 import reactHooks from "eslint-plugin-react-hooks";
 import reactRefresh from "eslint-plugin-react-refresh";
-import ReactThree from "eslint-plugin-react";
+import reactThreeFiber from "eslint-plugin-react-three-fiber";
 
 export default [
   { ignores: ["dist"] },
@@ -23,7 +23,7 @@ export default [
       react,
       "react-hooks": reactHooks,
       "react-refresh": reactRefresh,
-      "@react-three": ReactThree,
+      "@react-three": reactThreeFiber,
     },
     rules: {
       ...js.configs.recommended.rules,
