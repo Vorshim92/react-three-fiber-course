@@ -1,71 +1,37 @@
-import { OrbitControls, SpotLight, useHelper } from "@react-three/drei";
+import { AccumulativeShadows, ContactShadows, OrbitControls, RandomizedLight } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
-import { useRef } from "react";
-import { useMemo } from "react";
-
-import { Leva, useControls } from "leva";
-
-import * as THREE from "three";
-
-const PointLights = () => {
-  const ref = useRef();
-  useHelper(ref, THREE.PointLightHelper, 0.5, "red");
-  const options = useMemo(
-    () => ({
-      color: "#ff0000",
-      distance: 2.8,
-      decay: 2,
-      intensity: 1,
-      position: [0.7, 0.7, 0.7],
-    }),
-    []
-  );
-  const lightA = useControls("Point Light A", options);
-
-  return (
-    <>
-      <pointLight ref={ref} position={lightA.position} color={lightA.color} distance={lightA.distance} decay={lightA.decay} intensity={lightA.intensity} />
-    </>
-  );
-};
-const SpotLights = () => {
-  const ref = useRef();
-  useHelper(ref, THREE.SpotLightHelper, "red");
-  const options = useMemo(
-    () => ({
-      color: "#fff900",
-      distance: 6,
-      attenuation: 2.2,
-      angle: 1.1,
-      anglePower: 1,
-    }),
-    []
-  );
-  const lightB = useControls("Spot Light B", options);
-
-  return (
-    <>
-      <SpotLight ref={ref} color={lightB.color} distance={lightB.distance} angle={lightB.angle} attenuation={lightB.attenuation} anglePower={lightB.anglePower} />
-    </>
-  );
-};
-
+import { useControls } from "leva";
 function App() {
+  const { cubeInAir } = useControls({
+    cubeInAir: false,
+  });
+
   return (
     <>
-      <Canvas camera={{ position: [0, 3, 3] }}>
-        <PointLights />
-        <SpotLights />
-
+      <Canvas shadows camera={{ position: [0, 3, 3] }}>
         <OrbitControls />
+        <AccumulativeShadows temporal frames={35} alphaTest={0.85} scale={5} position={[0, -0.499, 0]} color="#EFBD4E">
+          <RandomizedLight amount={4} radius={9} intensity={0.55} ambient={0.25} position={[5, 5, -10]} />
+          <RandomizedLight amount={4} radius={5} intensity={0.25} ambient={0.55} position={[-5, 5, -9]} />
+        </AccumulativeShadows>
+        <ContactShadows position-y={-0.49} opacity={0.5} blur={2} color={"pink"} scale={10} />
+        <ambientLight intensity={0.5} />
+        <directionalLight position={[5, 5, 5]} intensity={0.5} />
+        <directionalLight position={[-5, 5, 5]} intensity={0.5} color="red" />
 
-        <mesh rotation-y={Math.PI / 4}>
-          <boxGeometry />
-          <meshStandardMaterial color="white" roughness={1} metalness={0} />
+        <mesh position={[1, 1, 1]} castShadow>
+          <sphereGeometry args={[0.5, 32, 32]} />
+          <meshStandardMaterial color="white" />
         </mesh>
-        <mesh rotation-x={-Math.PI / 2} position-y={-0.5}>
+
+        <mesh rotation-y={Math.PI / 4} castShadow receiveShadow position-y={cubeInAir ? 1 : 0}>
+          <boxGeometry />
+          <meshStandardMaterial color="white" />
+        </mesh>
+
+        <mesh rotation-x={-Math.PI / 2} position-y={-0.5} receiveShadow>
           <planeGeometry args={[5, 5]} />
-          <meshPhysicalMaterial color="white" clearcoat={0.5} reflectivity={0.8} />
+          <meshStandardMaterial color="white" />
         </mesh>
       </Canvas>
     </>
